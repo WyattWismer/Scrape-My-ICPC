@@ -1,11 +1,10 @@
 import matplotlib.pyplot as plt
 from math import ceil
 import numpy as np
+from user_input import Choices as CH
 
 from data_handler import data
 
-# FLAGS
-#MAX_OFFSET=0.1
 
 # STATE 
 color_ind = {}
@@ -38,7 +37,11 @@ def plot_year_result(school, year, offset, has_legend):
     """
     c = get_color(school)
 
+    # get rankings
     rankings = data[school][year]
+    # apply users point chooser
+    rankings = CH.point_chooser(rankings)
+
     n = len(rankings)
     x = np.full(n, year+offset)
 
