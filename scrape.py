@@ -1,7 +1,9 @@
 from collections import defaultdict as dd
 from bs4 import BeautifulSoup
 from urllib2 import Request,urlopen
+import numpy as np
 import re
+
 
 def get_page(year):
     year_str = str(year%100)
