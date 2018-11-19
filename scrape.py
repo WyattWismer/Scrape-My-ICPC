@@ -2,10 +2,19 @@ from collections import defaultdict as dd
 from bs4 import BeautifulSoup
 from urllib2 import Request,urlopen
 import numpy as np
+import pickle
 import re
+import os
+
+#CONSTANTS
+page_dir = "pages"
 
 
-def get_page(year):
+def in_dir(fname, path_to_dir='.'):
+    return fname in os.listdir(path_to_dir) 
+
+def GET_page(year):
+    # Build request
     year_str = str(year%100)
     pattern_str = "https://ecna%s.kattis.com/standings" 
     url = pattern_str % year_str
@@ -17,14 +26,40 @@ def get_page(year):
        'Accept-Language': 'en-US,en;q=0.8',
        'Connection': 'keep-alive'}
 
+
+    # GET page
     req = Request(url, headers=hdr)
     page = urlopen(req).read()
     page = re.sub(r'[^\x00-\x7F]+',' ', page) # Remove non-ascii
+
+    return page
+
+def load_page(year):
+    # Make page_dir if it doesn't already exist
+    if not in_dir(page_dir):
+        os.mkdir(page_dir)
+
+     # Check for saved pages
+    page_name = "%d.html" % year
+    page_pth = os.path.join(page_dir, page_name)
+    
+    # Check for existing page
+    if in_dir(page_name, page_dir):
+        fl = open(page_pth, 'r')
+        return pickle.load(fl)
+    
+    page = GET_page(year)
+
+    # Pickle it!
+    fl = open(page_pth, 'w')
+    pickle.dump(page, fl)
+
     return page
 
 
 def get_soup(year):
-    page = get_page(year)
+    # Construct soup 
+    page = load_page(year)
     soup = BeautifulSoup(page, 'html.parser')
     return soup
 
