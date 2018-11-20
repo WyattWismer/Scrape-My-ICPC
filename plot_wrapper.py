@@ -8,7 +8,10 @@ from data_handler import data
 
 # STATE 
 color_ind = {}
-schools = []
+schools = set()
+
+# CONSTANT
+MAX_OFFSET=0.25
 
 
       
@@ -23,7 +26,7 @@ def get_color(school):
 
 def add_school(school):
     # add school to list
-    schools.append(school)
+    schools.add(school)
 
     # plot results for school
     plot_all_results(school)    
@@ -44,9 +47,9 @@ def plot_year_result(school, year, offset, has_legend):
 
     n = len(rankings)
     x = np.full(n, year+offset)
-
-    line, = plt.plot(x, rankings, marker='o', color=c)
-    line.has_legend = has_legend 
+    
+    line_label = (has_legend and school) or None
+    line, = plt.plot(x, rankings, marker='o', color=c, label=line_label)
 
 def get_offset(): #TODO
     return 0.1
@@ -56,13 +59,12 @@ def plot_all_results(school):
 
     tot_offset = get_offset()*(len(schools)-1) 
     school_data = data[school]
-    has_legend = (school==schools[0])
+    first = True
 
     for year in sorted(school_data):
-        plot_year_result(school, year, tot_offset, has_legend)
+        plot_year_result(school, year, tot_offset, first)
+        first = False
 
-def build_legend(): #TODO
-    pass
 
 def plot_trend(school): #TODO
     pass
@@ -85,6 +87,7 @@ def end():
     title_font = {'weight' : 'bold',
                   'size'   : 20} 
 
+    plt.legend()
     plt.title("ICPC ECNA Regional Comparison", **title_font)
     plt.xlabel("Year")
     plt.ylabel("Rank")
