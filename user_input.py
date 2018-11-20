@@ -20,35 +20,36 @@ class Inputter:
             print "This is not a valid option"
 
     @staticmethod
-    def choose_option_from_list(li):
+    def choose_options_from_list(li, item_name="option"):
         while True:
             # Display options
             for i,option in enumerate(li):
                 print "(%d) %s" % (i, option) 
 
             # User choice
-            inp = raw_input("Please type the option you would like: ")
-            inp = inp.strip()
+            inp = raw_input("Please type the %s(s) you would like seperated by spaces.\n[[ PRESS ENTER FOR DEFAULT  ]]\n: " % item_name)
+            if not inp: return
 
-            if is_int(inp):
-                choice = int(inp)
-                if 0 <= choice < len(li):
-                    return li[int(inp)]
-            print "This is not a valid option"
+            inp = inp.strip().split()
+            valid = for_all(is_int, inp) and for_all(lambda e: 0 <= int(e) < len(li), inp)
+
+            if not valid:
+                print "Your input must be some number of space seperated integers"
+                continue
+            
+            return map(lambda i: li[int(i)], inp)
 
     @staticmethod
-    def get_lambda_function(flavor, example, default):
+    def choose_lambda_function(flavor, example, default):
         while True:
             print "Please write a python expression to %s." % flavor
-            print "Use the symbol % to represent your value."
+            print "Use the symbol % to represent the provided value."
             print "Example: %s" % example
             print "[[ PRESS ENTER FOR DEFAULT  %s  ]]" % default
             
             inp = raw_input()
             if not inp: return
             
-
-
             cnt = inp.count('%')
             if cnt == 0:
                 print "Your input must be a valid python expression and contain %"
@@ -64,7 +65,16 @@ class Inputter:
 
 def is_int(inp):
     pat = "^[0-9]+$"
-    return re.match(pat, inp)
+    return (re.match(pat, inp) and True) or False
+
+
+def for_all(p,li):
+    """
+        for-all e in li: p[e] = True 
+    """
+    func_and = lambda a,b: a and b 
+    p_li = map(p, li)
+    return reduce(func_and, p_li)  
 
         
 

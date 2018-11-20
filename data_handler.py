@@ -13,8 +13,5 @@ def load_data(start_year, end_year):
         for school in standings:
             data[school][year] = standings[school] 
 
-def sort_school_data():
-    for school in data:
-        data[school]
 
     
