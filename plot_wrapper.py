@@ -8,8 +8,7 @@ from data_handler import data
 
 # STATE 
 color_ind = {}
-schools = set()
-num_schools = None
+schools = None 
 
 # CONSTANT
 MAX_OFFSET=0.25
@@ -25,23 +24,23 @@ def get_color(school):
         color_ind[school] = len(color_ind)
     return cmap(color_ind[school])
 
-def add_school(school):
-    # add school to list
-    schools.add(school)
-
+def add_school(sid):
     # plot results for school
-    plot_all_results(school)    
+    plot_all_results(sid)    
 
     # plot trend
-    plot_trend(school)
+    plot_trend(sid)
 
 def add_target_schools(target_schools):
-    global num_schools
+    global schools
     start()
 
-    num_schools = len(target_schools)
-    for school in target_schools:
-        add_school(school)
+    schools = target_schools
+    n = len(schools)
+    assert(n>0)
+
+    for sid in range(n):
+        add_school(sid)
 
     end()
 
@@ -55,7 +54,7 @@ def plot_year_result(school, year, offset, has_legend):
     # get rankings
     rankings = data[school][year]
     # apply users point chooser
-    rankings = CH.point_chooser(rankings)
+    rankings = CH.rank_point_chooser(rankings)
 
     n = len(rankings)
     x = np.full(n, year+offset)
@@ -64,15 +63,14 @@ def plot_year_result(school, year, offset, has_legend):
     line, = plt.plot(x, rankings, marker='o', color=c, label=line_label)
 
 def get_offset(ind): 
-    print num_schools
-    if(num_schools==1): return 0
-    step = MAX_OFFSET/(num_schools-1)
+    n = len(schools)
+    if(n==1): return 0
+    step = MAX_OFFSET/(n-1)
     return ind*step - MAX_OFFSET/2
 
-def plot_all_results(school):
-    assert(schools)
-
-    tot_offset = get_offset(len(schools)-1) 
+def plot_all_results(sid):
+    tot_offset = get_offset(sid) 
+    school = schools[sid]
     school_data = (e for e in sorted(data[school]))
 
     plot_year_result(school, next(school_data), tot_offset, True)

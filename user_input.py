@@ -37,12 +37,12 @@ class Inputter:
             print "This is not a valid option"
 
     @staticmethod
-    def get_lambda_function(flavor, example):
+    def get_lambda_function(flavor, example, default):
         while True:
-            print "Please write a python expression to", flavor
+            print "Please write a python expression to %s." % flavor
             print "Use the symbol % to represent your value."
             print "Example: %s" % example
-            print "<ENTER FOR DEFAULT>"
+            print "[[ PRESS ENTER FOR DEFAULT  %s  ]]" % default
             
             inp = raw_input()
             if not inp: return

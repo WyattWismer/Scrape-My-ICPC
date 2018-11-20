@@ -10,11 +10,18 @@ target_schools = ['McMaster University', 'University of Waterloo', 'University o
 # Let user select which options they'd like
 sm = staticmethod
 
-CH.point_chooser = sm(Inp.get_lambda_function(
-"select which data points you'd like",
-"[%[0]] would select only the first point"
+CH.rank_point_chooser = sm(Inp.get_lambda_function(
+"select which data points you would like to graph from each year's performance",
+"%[0:1] would select only the first point.",
+"%[:]"
 ) or (lambda x: x)) #DEFAULT
 
+
+CH.trend_point_chooser = sm(Inp.get_lambda_function(
+"select which data point you would like to use in the trend",
+"[%[-1]] would select only the last point.",
+"%[0:1]"
+) or (lambda x: x[0:1])) #DEFAULT
 
 
 # Load data
