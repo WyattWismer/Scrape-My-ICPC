@@ -9,6 +9,7 @@ from data_handler import data
 # STATE 
 color_ind = {}
 schools = set()
+num_schools = None
 
 # CONSTANT
 MAX_OFFSET=0.25
@@ -33,6 +34,17 @@ def add_school(school):
 
     # plot trend
     plot_trend(school)
+
+def add_target_schools(target_schools):
+    global num_schools
+    start()
+
+    num_schools = len(target_schools)
+    for school in target_schools:
+        add_school(school)
+
+    end()
+
     
 def plot_year_result(school, year, offset, has_legend):
     """
@@ -51,19 +63,22 @@ def plot_year_result(school, year, offset, has_legend):
     line_label = (has_legend and school) or None
     line, = plt.plot(x, rankings, marker='o', color=c, label=line_label)
 
-def get_offset(): #TODO
-    return 0.1
+def get_offset(ind): 
+    print num_schools
+    if(num_schools==1): return 0
+    step = MAX_OFFSET/(num_schools-1)
+    return ind*step - MAX_OFFSET/2
 
 def plot_all_results(school):
     assert(schools)
 
-    tot_offset = get_offset()*(len(schools)-1) 
-    school_data = data[school]
-    first = True
+    tot_offset = get_offset(len(schools)-1) 
+    school_data = (e for e in sorted(data[school]))
 
-    for year in sorted(school_data):
-        plot_year_result(school, year, tot_offset, first)
-        first = False
+    plot_year_result(school, next(school_data), tot_offset, True)
+
+    for year in school_data:
+        plot_year_result(school, year, tot_offset, False)
 
 
 def plot_trend(school): #TODO

@@ -17,16 +17,10 @@ CH.point_chooser = sm(Inp.get_lambda_function(
 
 
 
-#max_offset = 0.15
-#offset = 0 if len(target_schools)==1 else max_offset/(len(target_schools)-1)
-
 # Load data
 dh.load_data(2015,2018)
 
 # Plot data
-pw.start()
-for school in target_schools:
-    pw.add_school(school)
-pw.end()
+pw.add_target_schools(target_schools)
 
 
