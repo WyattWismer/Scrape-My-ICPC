@@ -23,8 +23,9 @@ class Inputter:
     def choose_options_from_list(li, item_name="option"):
         while True:
             # Display options
-            for i,option in enumerate(li):
-                print "(%d) %s" % (i, option) 
+            out = ["(%d) %s" % (i, opt) for i,opt in enumerate(li)]
+            print_columns(out,2)
+
 
             # User choice
             inp = raw_input("Please type the %s(s) you would like seperated by spaces.\n[[ PRESS ENTER FOR DEFAULT  ]]\n: " % item_name)
@@ -55,10 +56,7 @@ class Inputter:
                 print "Your input must be a valid python expression and contain %"
                 continue
 
-            print "cnt is",cnt
-            print "inp before", inp
             inp = inp.strip().replace("%","%s")
-            print "inp after", inp
             
             return eval("lambda __x__: " + inp % (("__x__",)*cnt))
 
@@ -77,7 +75,15 @@ def for_all(p,li):
     return reduce(func_and, p_li)  
 
         
+def print_columns(out, ncols): 
+    n = len(out)
+    mx_len = max(map(lambda x: len(x), out))
+    fm = "{:<"+str(mx_len)+"s}"
 
+    for i,val in enumerate(out):
+        if (i%3==0): print "\n",
+        print fm.format(val),
+    print 
 
 
 

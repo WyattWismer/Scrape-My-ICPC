@@ -11,8 +11,7 @@ sm = staticmethod
 
 # From the ranks of a schools teams for a given year choose the points you would like to graph.
 CH.rank_point_chooser = sm(Inp.choose_lambda_function(
-"choose the points you would like to graph given the ranks of all of a school's teams for a given year"
-"select which data points you would like to graph from each year's performance",
+"choose the points you would like to graph given the ranks of all of a school's teams for a given year",
 "%[0:1] would select only the first point.",
 "%[:]"
 ) or (lambda x: x)) #DEFAULT
