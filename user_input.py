@@ -32,7 +32,7 @@ class Inputter:
 
             if is_int(inp):
                 choice = int(inp)
-                if 0<= choice < len(li):
+                if 0 <= choice < len(li):
                     return li[int(inp)]
             print "This is not a valid option"
 
@@ -46,14 +46,20 @@ class Inputter:
             
             inp = raw_input()
             if not inp: return
+            
 
-            if "%" not in inp:
+
+            cnt = inp.count('%')
+            if cnt == 0:
                 print "Your input must be a valid python expression and contain %"
                 continue
 
+            print "cnt is",cnt
+            print "inp before", inp
             inp = inp.strip().replace("%","%s")
+            print "inp after", inp
             
-            return eval("lambda __x__: " + inp % "__x__")
+            return eval("lambda __x__: " + inp % (("__x__",)*cnt))
 
 
 def is_int(inp):

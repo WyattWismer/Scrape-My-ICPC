@@ -79,8 +79,23 @@ def plot_all_results(sid):
         plot_year_result(school, year, tot_offset, False)
 
 
-def plot_trend(school): #TODO
-    pass
+def plot_trend(school):
+    for sid, school in enumerate(schools):
+        c = get_color(school)
+        school_data = sorted(data[school])
+
+        y = []
+        for year in school_data:
+            rankings = data[school][year]
+            ranking = CH.trend_point_chooser(rankings)
+            assert(type(ranking)==int)
+            y.append(ranking)
+
+        x = np.array(school_data) + get_offset(sid)
+        y = np.array(y)
+        plt.plot(x,y,color=c)
+        
+
 
 
 def start():

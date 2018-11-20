@@ -19,9 +19,9 @@ CH.rank_point_chooser = sm(Inp.get_lambda_function(
 
 CH.trend_point_chooser = sm(Inp.get_lambda_function(
 "select which data point you would like to use in the trend",
-"[%[-1]] would select only the last point.",
-"%[0:1]"
-) or (lambda x: x[0:1])) #DEFAULT
+"%[-1] would select only the last point.",
+"%[0]"
+) or (lambda x: x[0])) #DEFAULT
 
 
 # Load data
