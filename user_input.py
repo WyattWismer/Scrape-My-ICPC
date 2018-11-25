@@ -82,12 +82,14 @@ class Inputter:
 
     @staticmethod
     def choose_options_from_list(li, item_name="option"):
+        # Sort schools
+        li.sort()
+        # Iterate until valid input
         while True:
             # Display options
             out = ["(%d) %s" % (i, opt) for i,opt in enumerate(li)]
             print_columns(out)
-
-
+            
             # User choice
             inp = raw_input("Please type the %s(s) you would like seperated by spaces:\n"
                             "[[ PRESS ENTER FOR DEFAULT  ]]\n " % item_name)
@@ -151,12 +153,13 @@ def print_columns(out):
     mx_len = max(map(len, out))
     console_width = get_console_width()
     ncols = console_width/(mx_len+1)
-    fm = "{:<"+str(mx_len)+"s}"
+    buf = 2
+    fm = "{:<"+str(mx_len+buf)+"s}"
 
     for i,val in enumerate(out):
         if (i%ncols==0): print "\n",
         print fm.format(val),
-    print
+    print "\n"
 
 
 def get_console_width():
