@@ -1,6 +1,66 @@
+from os import listdir
+from os.path import join, exists, isfile, isdir
 import re
+import json
 
-class Choices: pass
+
+class Choices:
+    """
+    Storage of user choices both as text and as functions.
+    By treating everything as a function the interface can be greatly simplified.
+    Constant values will become constant functions and this makes it easy to 
+    serialize eveyrthing in a human readable (and human editable) format.
+    Functions are exposed through the [] operator.
+    """
+    SAVED_PATH = './choices' 
+    raw = {}
+    func = {}
+
+    @staticmethod
+    def add_choice(name, f, **kwargs):
+        """
+        Takes in a function to obtain a user choice.
+        Runs this function and stores the result.
+        """
+        text = f(**kwargs)
+        Choices.raw[name] = text
+        Choices.build_choice(name)
+
+    @staticmethod
+    def build_choice(name):
+        """
+        From plain-text at raw[name],
+        Constructs lambda func at func[name]
+        """
+        rfunc = Choices.raw[name]
+        rfunc = rfunc.strip().replace("%","%s")
+        cnt = rfunc.count('%')
+        sm = staticmethod
+        Choices.func[name] = sm(eval("lambda __x__: " + rfunc % (("__x__",)*cnt)))
+
+    @staticmethod
+    def save_choices(fname):
+        """
+        Saves current raw choices as json
+        """
+        if not exists(SAVED_PATH):
+            os.mkdir(SAVED_PATH)
+
+        location = join(SAVED_PATH,fname)
+        with open(location, 'w') as out:
+            json.dump(Choices.raw, out, sort_keys=True, indent=4)
+
+    @staticmethod
+    def load_choices(fname):
+        """
+        Loads raw choices from json and build lambdas
+        """
+        assert(exists(SAVED_PATH) and isdir(SAVED_PATH))
+        location = join(SAVED_PATH, fname)
+        assert(exists(location) and isfile(location))
+        raw = json.load(location)
+        for name in raw: build_choice(name)
+
 
 class Inputter:
     """
@@ -41,7 +101,16 @@ class Inputter:
             return map(lambda i: li[int(i)], inp)
 
     @staticmethod
-    def choose_lambda_function(flavor, example, default):
+    def choose_lambda_function(**kwargs):
+        # Check for required keys
+        assert('flavor' in kwargs)
+        assert('example' in kwargs)
+        assert('default' in kwargs)
+
+        flavor = kwargs['flavor']
+        example = kwargs['example']
+        default = kwargs['default']
+
         while True:
             print "Please write a python expression to %s." % flavor
             print "Use the symbol % to represent the provided value."
@@ -49,17 +118,15 @@ class Inputter:
             print "[[ PRESS ENTER FOR DEFAULT  %s  ]]" % default
             
             inp = raw_input()
-            if not inp: return
+            # Use default if no input is provided
+            if not inp: return default
             
             cnt = inp.count('%')
             if cnt == 0:
                 print "Your input must be a valid python expression and contain %"
                 continue
 
-            inp = inp.strip().replace("%","%s")
-            
-            return eval("lambda __x__: " + inp % (("__x__",)*cnt))
-
+            return inp
 
 def is_int(inp):
     pat = "^[0-9]+$"

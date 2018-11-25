@@ -6,22 +6,25 @@ import numpy as np
 
 
 
-# Let user select which options they'd like
-sm = staticmethod
 
 # From the ranks of a schools teams for a given year choose the points you would like to graph.
-CH.rank_point_chooser = sm(Inp.choose_lambda_function(
-"choose the points you would like to graph given the ranks of all of a school's teams for a given year",
-"%[0:1] would select only the first point.",
-"%[:]"
-) or (lambda x: x)) #DEFAULT
+CH.add_choice(
+'rank_point_chooser',
+Inp.choose_lambda_function,
+flavor=("choose the points you would like to graph given the"
+"ranks of all of a school's teams for a given year"),
+example="%[0:1] would select only the first point.",
+default="%[:]"             
+)
 
-
-CH.trend_point_chooser = sm(Inp.choose_lambda_function(
-"select which data point you would like to use in the trend",
-"%[-1] would select only the last point.",
-"%[0]"
-) or (lambda x: x[0])) #DEFAULT
+# Select which data points you would like to use from a schools performance for a particular year
+CH.add_choice(
+'trend_point_chooser',
+Inp.choose_lambda_function,
+flavor="select which data point you would like to use in the trend",
+example="%[-1] would select only the last point.",
+default="%[0]"
+)
 
 
 

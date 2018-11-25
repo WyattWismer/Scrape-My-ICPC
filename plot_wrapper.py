@@ -12,10 +12,11 @@ schools = None
 
 # CONSTANT
 MAX_OFFSET=0.25
-
-
       
-
+# LOCAL FUNCTIONS
+class LF:
+    rank_point_chooser  = None
+    trend_point_chooser = None
 
 def get_color(school):
     global color_ind
@@ -31,19 +32,6 @@ def add_school(sid):
     # plot trend
     plot_trend(sid)
 
-def add_target_schools(target_schools):
-    global schools
-    start()
-
-    schools = target_schools
-    n = len(schools)
-    assert(n>0)
-
-    for sid in range(n):
-        add_school(sid)
-
-    end()
-
     
 def plot_year_result(school, year, offset, has_legend):
     """
@@ -54,7 +42,7 @@ def plot_year_result(school, year, offset, has_legend):
     # get rankings
     rankings = data[school][year]
     # apply users point chooser
-    rankings = CH.rank_point_chooser(rankings)
+    rankings = LF.rank_point_chooser(rankings)
 
     n = len(rankings)
     x = np.full(n, year+offset)
@@ -87,7 +75,7 @@ def plot_trend(school):
         y = []
         for year in school_data:
             rankings = data[school][year]
-            ranking = CH.trend_point_chooser(rankings)
+            ranking = LF.trend_point_chooser(rankings)
             assert(type(ranking)==int)
             y.append(ranking)
 
@@ -101,8 +89,14 @@ def plot_trend(school):
 def start():
     plt.figure()
 
+    funcs = CH.func
+    assert('rank_point_chooser' in funcs)
+    assert('trend_point_chooser' in funcs)
 
-  
+    LF.rank_point_chooser  = funcs['rank_point_chooser']
+    LF.trend_point_chooser = funcs['trend_point_chooser']
+
+
 def end():
     up_to_int = lambda x: int(ceil(x))
     x_min, x_max = map(up_to_int, plt.xlim())
@@ -121,9 +115,20 @@ def end():
     plt.ylabel("Rank")
 
     plt.show()
-            
 
 
+def add_target_schools(target_schools):
+    global schools
+    start()
+
+    schools = target_schools
+    n = len(schools)
+    assert(n>0)
+
+    for sid in range(n):
+        add_school(sid)
+
+    end()
 
 
 
