@@ -1,4 +1,5 @@
 from os import listdir
+from os import popen
 from os.path import join, exists, isfile, isdir
 import re
 import json
@@ -84,11 +85,12 @@ class Inputter:
         while True:
             # Display options
             out = ["(%d) %s" % (i, opt) for i,opt in enumerate(li)]
-            print_columns(out,2)
+            print_columns(out)
 
 
             # User choice
-            inp = raw_input("Please type the %s(s) you would like seperated by spaces.\n[[ PRESS ENTER FOR DEFAULT  ]]\n: " % item_name)
+            inp = raw_input("Please type the %s(s) you would like seperated by spaces:\n"
+                            "[[ PRESS ENTER FOR DEFAULT  ]]\n " % item_name)
             if not inp: return
 
             inp = inp.strip().split()
@@ -125,8 +127,10 @@ class Inputter:
             if cnt == 0:
                 print "Your input must be a valid python expression and contain %"
                 continue
-
+            
+            print #add spacing at end
             return inp
+
 
 def is_int(inp):
     pat = "^[0-9]+$"
@@ -135,22 +139,35 @@ def is_int(inp):
 
 def for_all(p,li):
     """
-        for-all e in li: p[e] = True 
+        return for-all e in li: p[e] = True 
     """
     func_and = lambda a,b: a and b 
     p_li = map(p, li)
     return reduce(func_and, p_li)  
 
-        
-def print_columns(out, ncols): 
+
+def print_columns(out): 
     n = len(out)
-    mx_len = max(map(lambda x: len(x), out))
+    mx_len = max(map(len, out))
+    console_width = get_console_width()
+    ncols = console_width/(mx_len+1)
     fm = "{:<"+str(mx_len)+"s}"
 
     for i,val in enumerate(out):
-        if (i%3==0): print "\n",
+        if (i%ncols==0): print "\n",
         print fm.format(val),
-    print 
+    print
+
+
+def get_console_width():
+    w = 80 #DEFAULT
+    try:
+        #Currently only support linux
+        _,c = popen('stty size').read().split()
+        return int(c)
+    except:
+        pass
+    return w
 
 
 

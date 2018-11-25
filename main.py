@@ -11,7 +11,7 @@ import numpy as np
 CH.add_choice(
 'rank_point_chooser',
 Inp.choose_lambda_function,
-flavor=("choose the points you would like to graph given the"
+flavor=("choose the points you would like to graph given the "
 "ranks of all of a school's teams for a given year"),
 example="%[0:1] would select only the first point.",
 default="%[:]"             

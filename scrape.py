@@ -10,6 +10,19 @@ import os
 page_dir = "pages"
 
 
+def clean_school_name(school):
+    school = school.strip()
+    # Remove multiple spaces
+    school = ' '.join(school.split())
+    # cap exceptionally long strings
+    cap = 30 
+    if len(school)>cap:
+        end='...'
+        school = school[:cap-len(end)]+end
+    return school
+
+    
+
 def in_dir(fname, path_to_dir='.'):
     return fname in os.listdir(path_to_dir) 
 
@@ -79,9 +92,11 @@ def get_standings(year):
 
         rank = int(team.find("td", {"class": "rank table-min-wrap"}).string)
         school = team.find("td", {"class": "university-logo table-min-wrap"}).img['alt']
-
+        school = clean_school_name(school)
+        
         teams[school].append(rank)
     return teams
+
 
 
 
