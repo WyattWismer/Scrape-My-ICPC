@@ -9,14 +9,19 @@ from data_handler import data
 # STATE 
 color_ind = {}
 schools = None 
+local_func = None
 
 # CONSTANT
 MAX_OFFSET=0.25
       
 # LOCAL FUNCTIONS
 class LF:
-    rank_point_chooser  = None
-    trend_point_chooser = None
+    def __init__(self, functions):
+        # Reference functions from user choices
+        self.func = functions 
+    def __getitem__(self, key):
+        assert(key in self.func) 
+        return self.func[key]
 
 def get_color(school):
     global color_ind
@@ -42,7 +47,7 @@ def plot_year_result(school, year, offset, has_legend):
     # get rankings
     rankings = data[school][year]
     # apply users point chooser
-    rankings = LF.rank_point_chooser(rankings)
+    rankings = local_func['rank_point_chooser'](rankings)
 
     n = len(rankings)
     x = np.full(n, year+offset)
@@ -75,27 +80,21 @@ def plot_trend(school):
         y = []
         for year in school_data:
             rankings = data[school][year]
-            ranking = LF.trend_point_chooser(rankings)
+            ranking = local_func['trend_point_chooser'](rankings)
             assert(type(ranking)==int)
             y.append(ranking)
 
         x = np.array(school_data) + get_offset(sid)
         y = np.array(y)
         plt.plot(x,y,color=c)
-        
-
 
 
 def start():
     plt.figure()
+    assert(CH.func)
 
-    funcs = CH.func
-    assert('rank_point_chooser' in funcs)
-    assert('trend_point_chooser' in funcs)
-
-    LF.rank_point_chooser  = funcs['rank_point_chooser']
-    LF.trend_point_chooser = funcs['trend_point_chooser']
-
+    global local_func
+    local_func = LF(CH.func)
 
 def end():
     up_to_int = lambda x: int(ceil(x))

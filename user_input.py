@@ -1,5 +1,4 @@
-from os import listdir
-from os import popen
+from os import popen, mkdir
 from os.path import join, exists, isfile, isdir
 import re
 import json
@@ -23,7 +22,7 @@ class Choices:
         Takes in a function to obtain a user choice.
         Runs this function and stores the result.
         """
-        text = f(**kwargs)
+        text = str(f(**kwargs))
         Choices.raw[name] = text
         Choices.build_choice(name)
 
@@ -36,18 +35,17 @@ class Choices:
         rfunc = Choices.raw[name]
         rfunc = rfunc.strip().replace("%","%s")
         cnt = rfunc.count('%')
-        sm = staticmethod
-        Choices.func[name] = sm(eval("lambda __x__: " + rfunc % (("__x__",)*cnt)))
+        Choices.func[name] = eval("lambda "+"__x__"*(cnt>0)+": " + rfunc % (("__x__",)*cnt))
 
     @staticmethod
     def save_choices(fname):
         """
         Saves current raw choices as json
         """
-        if not exists(SAVED_PATH):
-            os.mkdir(SAVED_PATH)
+        if not exists(Choices.SAVED_PATH):
+            mkdir(Choices.SAVED_PATH)
 
-        location = join(SAVED_PATH,fname)
+        location = join(Choices.SAVED_PATH,fname)
         with open(location, 'w') as out:
             json.dump(Choices.raw, out, sort_keys=True, indent=4)
 
@@ -56,11 +54,13 @@ class Choices:
         """
         Loads raw choices from json and build lambdas
         """
-        assert(exists(SAVED_PATH) and isdir(SAVED_PATH))
-        location = join(SAVED_PATH, fname)
+        assert(exists(Choices.SAVED_PATH) and isdir(Choices.SAVED_PATH))
+        location = join(Choices.SAVED_PATH, fname)
         assert(exists(location) and isfile(location))
-        raw = json.load(location)
-        for name in raw: build_choice(name)
+        fp = open(location, 'r')
+        Choices.raw = json.load(fp)
+        for name in Choices.raw:
+            Choices.build_choice(name)
 
 
 class Inputter:
@@ -81,7 +81,18 @@ class Inputter:
             print "This is not a valid option"
 
     @staticmethod
-    def choose_options_from_list(li, item_name="option"):
+    def choose_options_from_list(**kwargs):
+        assert('options' in kwargs)
+        assert('item_name' in kwargs)
+        assert('default' in kwargs)
+
+        li        = kwargs['options']
+        item_name = kwargs['item_name']
+        default   = kwargs['default']
+
+        if 'plural' in kwargs: plural = kwargs['plural']
+        else:                  plural = False 
+
         # Sort schools
         li.sort()
         # Iterate until valid input
@@ -91,18 +102,36 @@ class Inputter:
             print_columns(out)
             
             # User choice
-            inp = raw_input("Please type the %s(s) you would like seperated by spaces:\n"
-                            "[[ PRESS ENTER FOR DEFAULT  ]]\n " % item_name)
-            if not inp: return
+            inp = raw_input(
+                "Please type the %s" % item_name+
+                "(s)"*plural+
+                " you would like"+
+                " seperated by spaces"*plural+
+                ":\n"+
+                "[[ PRESS ENTER FOR DEFAULT  ]]\n "+
+                "DEFAULT IS %s\n" % str(default)
+            )
+
+            if not inp:
+                print "<DEFAULT SELECTED>\n" 
+                return default
 
             inp = inp.strip().split()
             valid = for_all(is_int, inp) and for_all(lambda e: 0 <= int(e) < len(li), inp)
 
             if not valid:
-                print "Your input must be some number of space seperated integers"
+                if plural: print "Your input must be an integer"
+                else: print "Your input must be some number of space seperated integers"
                 continue
             
-            return map(lambda i: li[int(i)], inp)
+            res = map(lambda i: li[int(i)], inp)
+
+            if plural: return res
+            else: return res[0]
+
+    @staticmethod
+    def choose_option_from_list(**kwargs):
+        return Inputter.choose_options_from_list(plural=False, **kwargs)
 
     @staticmethod
     def choose_lambda_function(**kwargs):
@@ -111,7 +140,7 @@ class Inputter:
         assert('example' in kwargs)
         assert('default' in kwargs)
 
-        flavor = kwargs['flavor']
+        flavor  = kwargs['flavor']
         example = kwargs['example']
         default = kwargs['default']
 
