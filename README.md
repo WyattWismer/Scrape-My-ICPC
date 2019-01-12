@@ -23,10 +23,10 @@ python main.py
 ```
 
 ## Tips & Tricks
-- Enter 'help' at any point for more information.
+- Enter `help` at any point for more information
 - Press enter without typing anything to select a default option
-- Past configurations are stored in a human editable format under choices/
-- Working Offline? Scraped pages are stored locally in pages/
+- Past configurations are stored in a human editable format under `choices/`
+- Working Offline? Scraped pages are stored locally in `pages/`
 
 </br> 
 
