@@ -1,5 +1,5 @@
 # Scrape-My-ICPC
-Scrapes results from the **I**nternational **C**ollegiate **P**rogramming **C**ompetition. 
+Scrapes results from the International Collegiate Programming Competition. 
 
 Plots school results to compare progression of teams over multiple years.
 
