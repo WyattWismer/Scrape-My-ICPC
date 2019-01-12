@@ -8,11 +8,6 @@ Supports user expressions to select data points.
 > Note that currently only the ECNA region is supported. More support will be added soon :)
 </br>
 
-## Samples
-![McMaster, Waterloo, Toronto](https://raw.githubusercontent.com/WyattWismer/Scrape-My-ICPC/master/samples/mac_wat_tor_full.png)
-![McMaster, Waterloo, Toronto](https://raw.githubusercontent.com/WyattWismer/Scrape-My-ICPC/master/samples/mac_wat_tor_line.png)
-
-
 
 ## Required Packages
 - numpy
@@ -34,5 +29,9 @@ python main.py
 - Working Offline? Scraped pages are stored locally in pages/
 
 </br> 
+
+## Samples
+![McMaster, Waterloo, Toronto](https://raw.githubusercontent.com/WyattWismer/Scrape-My-ICPC/master/samples/mac_wat_tor_full.png)
+![McMaster, Waterloo, Toronto](https://raw.githubusercontent.com/WyattWismer/Scrape-My-ICPC/master/samples/mac_wat_tor_line.png)
 
 **\~\~ Have fun! \~\~**
