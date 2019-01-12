@@ -103,17 +103,15 @@ class Inputter:
             
             # User choice
             inp = raw_input(
-                "Please type the %s" % item_name+
+                "#'s of %s" % item_name+
                 "(s)"*plural+
                 " you would like"+
                 " seperated by spaces"*plural+
                 ":\n"+
-                "[[ PRESS ENTER FOR DEFAULT  ]]\n "+
-                "DEFAULT IS %s\n" % str(default)
+                "DEFAULT: %s\n" % str(default)
             )
 
             if not inp:
-                print "<DEFAULT SELECTED>\n" 
                 return default
 
             inp = inp.strip().split()
@@ -145,10 +143,8 @@ class Inputter:
         default = kwargs['default']
 
         while True:
-            print "Please write a python expression to %s." % flavor
-            print "Use the symbol % to represent the provided value."
-            print "Example: %s" % example
-            print "[[ PRESS ENTER FOR DEFAULT  %s  ]]" % default
+            print "Expression to %s" % flavor
+            print "DEFAULT: %s" % default
             
             inp = raw_input()
             # Use default if no input is provided

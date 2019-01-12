@@ -31,8 +31,7 @@ if not save_name:
     CH.add_choice(
     'rank_point_chooser',
     Inp.choose_lambda_function,
-    flavor=("choose the points you would like to graph given the "
-    "ranks of all of a school's teams for a given year"),
+    flavor="select points to draw",
     example="%[0:1] would select only the first point.",
     default="%[:]"             
     )
@@ -41,7 +40,7 @@ if not save_name:
     CH.add_choice(
     'trend_point_chooser',
     Inp.choose_lambda_function,
-    flavor="select which data point you would like to use in the trend",
+    flavor="select points for trend",
     example="%[-1] would select only the last point.",
     default="%[0]"
     )
@@ -59,7 +58,7 @@ if not save_name:
     plural=True
     )
 
-    save_name = raw_input("Please enter a name for this configuration: ")
+    save_name = raw_input("Name for configuration: ")
     save_name = save_name.strip()
 
     if save_name:
