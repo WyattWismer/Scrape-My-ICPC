@@ -3,7 +3,7 @@ Scrapes results from the International Collegiate Programming Competition.
 
 Plots school results to compare progression of teams over multiple years.
 
-Supports user specified expressions to select target data points.
+Supports user expressions to select data points.
 
 > Note that currently only the ECNA region is supported. More support will be added soon :)
 </br>
