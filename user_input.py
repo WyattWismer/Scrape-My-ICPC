@@ -82,13 +82,10 @@ class Inputter:
 
     @staticmethod
     def choose_options_from_list(**kwargs):
-        assert('options' in kwargs)
-        assert('item_name' in kwargs)
-        assert('default' in kwargs)
-
         li        = kwargs['options']
         item_name = kwargs['item_name']
         default   = kwargs['default']
+        help_text = helpify(kwargs['help_text'])
 
         if 'plural' in kwargs: plural = kwargs['plural']
         else:                  plural = False 
@@ -117,9 +114,8 @@ class Inputter:
             inp = inp.strip().split()
             valid = for_all(is_int, inp) and for_all(lambda e: 0 <= int(e) < len(li), inp)
 
-            if not valid:
-                if plural: print "Your input must be an integer"
-                else: print "Your input must be some number of space seperated integers"
+            if is_help(inp) or not valid:
+                print help_text
                 continue
             
             res = map(lambda i: li[int(i)], inp)
@@ -133,14 +129,9 @@ class Inputter:
 
     @staticmethod
     def choose_lambda_function(**kwargs):
-        # Check for required keys
-        assert('flavor' in kwargs)
-        assert('example' in kwargs)
-        assert('default' in kwargs)
-
-        flavor  = kwargs['flavor']
-        example = kwargs['example']
-        default = kwargs['default']
+        flavor    = kwargs['flavor']
+        default   = kwargs['default']
+        help_text = helpify(kwargs['help_text'])
 
         while True:
             print "Expression to %s" % flavor
@@ -152,12 +143,24 @@ class Inputter:
             
             cnt = inp.count('%')
             if cnt == 0:
-                print "Your input must be a valid python expression and contain %"
+                print help_text 
                 continue
             
             print #add spacing at end
             return inp
 
+#Helper Methods
+def is_help(inp):
+    help_cmd="help"
+    return (inp == help_cmd
+            or inp == help_cmd.upper())
+
+def helpify(help_text):
+    longest_line_width = max(map(len, help_text.split('\n')))
+    border = '-'*longest_line_width+'\n'
+    advice = "\nPress enter for default.\n"
+    return "\n%s%s%s%s\n" % (border,help_text,advice,border)
+    
 
 def is_int(inp):
     pat = "^[0-9]+$"

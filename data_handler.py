@@ -12,6 +12,7 @@ def load_data(start_year, end_year):
 
         for school in standings:
             data[school][year] = standings[school] 
+            data[school][year].sort()
 
 
     
