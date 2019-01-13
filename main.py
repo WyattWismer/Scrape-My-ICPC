@@ -7,15 +7,36 @@ from os.path import exists
 from os import listdir
 
 
-# get list of saves
-saves = None
-if exists(CH.SAVED_PATH):
-    saves = listdir(CH.SAVED_PATH) 
-    saves = filter(lambda s: s.endswith('.json'), saves)
+def main():
+    # Load data
+    dh.load_data(2015,2018)
 
-# continue or load save 
-save_name = None
-if saves:
+    # load save build new
+    saves = get_saves()
+    did_load_save = load_save(saves)
+    if not did_load_save:
+        build_new_config()
+
+    # Plot data
+    pw.add_target_schools(CH.func['target_schools']())
+
+
+def get_saves():
+    """
+    Finds name of all saves under choices/
+    """
+    saves = []
+    if exists(CH.SAVED_PATH):
+        saves = listdir(CH.SAVED_PATH) 
+        saves = filter(lambda s: s.endswith('.json'), saves)
+    return saves 
+
+def load_save(saves):
+    """
+    Loads a particular choices configuration
+    """
+    save_name = None
+    if not saves: return
     save_name = Inp.choose_option_from_list(options=saves,
                                             item_name="save",
                                             help_text=("Enter the # associated with a save to load it. \n"
@@ -23,12 +44,13 @@ if saves:
                                             default=None)
     if not save_name == None:
         CH.load_choices(save_name)
+        return True
+    return False
 
-# Load data
-dh.load_data(2015,2018)
-
-
-if not save_name:
+def build_new_config():
+    """
+    Builds a choices configuration from user input
+    """
     # From ranks of a schools teams for a given year choose the points you would like to graph.
     CH.add_choice(
     'rank_point_chooser',
@@ -81,8 +103,5 @@ if not save_name:
         CH.save_choices(save_name)
 
 
-
-# Plot data
-pw.add_target_schools(CH.func['target_schools']())
-
-
+if __name__ == "__main__":
+    main()

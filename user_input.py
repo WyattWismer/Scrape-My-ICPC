@@ -82,6 +82,11 @@ class Inputter:
 
     @staticmethod
     def choose_options_from_list(**kwargs):
+        """
+        Prompt user to select options from list.
+        Supports input validation & interactive help
+        (i.e. when input is bad, help messages are good)
+        """
         li        = kwargs['options']
         item_name = kwargs['item_name']
         default   = kwargs['default']
@@ -125,10 +130,17 @@ class Inputter:
 
     @staticmethod
     def choose_option_from_list(**kwargs):
+        """
+        Choose singular option from list
+        """
         return Inputter.choose_options_from_list(plural=False, **kwargs)
 
     @staticmethod
     def choose_lambda_function(**kwargs):
+        """
+        Prompt user to enter a python expression using %.
+        Expression will be eval'd into a lambda function.
+        """
         flavor    = kwargs['flavor']
         default   = kwargs['default']
         help_text = helpify(kwargs['help_text'])
@@ -151,11 +163,18 @@ class Inputter:
 
 #Helper Methods
 def is_help(inp):
+    """
+    Checks if the users input is 'help' or some variation
+    """
     help_cmd="help"
     return (inp == help_cmd
             or inp == help_cmd.upper())
 
 def helpify(help_text):
+    """
+    Formats help text for display.
+    This will add any text that persists across all help messages.
+    """
     longest_line_width = max(map(len, help_text.split('\n')))
     border = '-'*longest_line_width+'\n'
     advice = "\nPress enter for default.\n"
@@ -163,13 +182,16 @@ def helpify(help_text):
     
 
 def is_int(inp):
+    """
+    Is inp an integer
+    """
     pat = "^[0-9]+$"
     return (re.match(pat, inp) and True) or False
 
 
 def for_all(p,li):
     """
-        return for-all e in li: p[e] = True 
+    return for-all e in li: p[e] = True 
     """
     func_and = lambda a,b: a and b 
     p_li = map(p, li)
@@ -177,6 +199,9 @@ def for_all(p,li):
 
 
 def print_columns(out): 
+    """
+    Prints out in a series of columns
+    """
     n = len(out)
     mx_len = max(map(len, out))
     console_width = get_console_width()
@@ -191,6 +216,10 @@ def print_columns(out):
 
 
 def get_console_width():
+    """
+    Attempts to get console width.
+    On failure falls back to default.
+    """
     w = 80 #DEFAULT
     try:
         #Currently only support linux

@@ -16,14 +16,19 @@ MAX_OFFSET=0.25
       
 # LOCAL FUNCTIONS
 class LF:
+    """
+    Exposes functions loaded in from choices configuration
+    """
     def __init__(self, functions):
-        # Reference functions from user choices
         self.func = functions 
     def __getitem__(self, key):
         assert(key in self.func) 
         return self.func[key]
 
 def get_color(school):
+    """
+    Generates the color for a particular school
+    """
     global color_ind
     cmap = plt.get_cmap('tab10')
     if school not in color_ind:
@@ -31,16 +36,27 @@ def get_color(school):
     return cmap(color_ind[school])
 
 def add_school(sid):
+    """
+    Plot results for a school with a given school id
+    """
     # plot results for school
     plot_all_results(sid)    
 
     # plot trend
     plot_trend(sid)
 
-    
+def get_offset(ind): 
+    """
+    Get offset used in plotting year result
+    """
+    n = len(schools)
+    if(n==1): return 0
+    step = MAX_OFFSET/(n-1)
+    return ind*step - MAX_OFFSET/2
+
 def plot_year_result(school, year, offset, has_legend):
     """
-    Plots a vertical line showing rankings for a given year 
+    Plots vertical line to display rankings for a given year 
     """
     c = get_color(school)
 
@@ -55,13 +71,11 @@ def plot_year_result(school, year, offset, has_legend):
     line_label = (has_legend and school) or None
     line, = plt.plot(x, rankings, marker='o', color=c, label=line_label)
 
-def get_offset(ind): 
-    n = len(schools)
-    if(n==1): return 0
-    step = MAX_OFFSET/(n-1)
-    return ind*step - MAX_OFFSET/2
 
 def plot_all_results(sid):
+    """
+    Plots year results across all years for a given school
+    """
     tot_offset = get_offset(sid) 
     school = schools[sid]
     school_data = (e for e in sorted(data[school]))
@@ -73,6 +87,9 @@ def plot_all_results(sid):
 
 
 def plot_trend(school):
+    """
+    Plots trend line for a particular school
+    """
     for sid, school in enumerate(schools):
         c = get_color(school)
         school_data = sorted(data[school])
@@ -89,14 +106,22 @@ def plot_trend(school):
         plt.plot(x,y,color=c)
 
 
-def start():
+def setup():
+    """
+    Boilerplate for matplotlib.
+    Populates local functions class.
+    """
     plt.figure()
     assert(CH.func)
-
     global local_func
     local_func = LF(CH.func)
 
-def end():
+def finalize():
+    """
+    More Boilerplate for matplotlib! 
+    Sets graph boundaries, axis step and labels.
+    Displays graph.
+    """
     up_to_int = lambda x: int(ceil(x))
     x_min, x_max = map(up_to_int, plt.xlim())
     y_min, y_max = map(up_to_int, plt.ylim())
@@ -112,22 +137,24 @@ def end():
     plt.title("ICPC ECNA Regional Comparison", **title_font)
     plt.xlabel("Year")
     plt.ylabel("Rank")
-
     plt.show()
 
 
 def add_target_schools(target_schools):
+    """
+    Adds given schools & displays graph
+    """
     global schools
-    start()
-
     schools = target_schools
-    n = len(schools)
-    assert(n>0)
+    assert(schools) 
 
+    setup()
+
+    n = len(schools)
     for sid in range(n):
         add_school(sid)
 
-    end()
+    finalize()
 
 
 
