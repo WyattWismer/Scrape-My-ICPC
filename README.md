@@ -12,6 +12,7 @@ Supports user expressions to select data points.
 ## Required Packages
 - numpy
 - matplotlib
+- beautifulsoup4
 
 </br>  
 
