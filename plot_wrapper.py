@@ -2,19 +2,20 @@ import matplotlib.pyplot as plt
 from math import ceil
 import numpy as np
 from user_input import Choices as CH
-
 from data_handler import data
 
 
-# STATE 
-color_ind = {}
-schools = None 
-local_func = None
-
 # CONSTANT
 MAX_OFFSET=0.25
+
+class State:
+    """
+    Keeps track of data used during plotting.
+    """
+    color_ind = {}
+    schools = None 
+    local_func = None
       
-# LOCAL FUNCTIONS
 class LF:
     """
     Exposes functions loaded in from choices configuration
@@ -29,11 +30,10 @@ def get_color(school):
     """
     Generates the color for a particular school
     """
-    global color_ind
     cmap = plt.get_cmap('tab10')
-    if school not in color_ind:
-        color_ind[school] = len(color_ind)
-    return cmap(color_ind[school])
+    if school not in State.color_ind:
+        State.color_ind[school] = len(State.color_ind)
+    return cmap(State.color_ind[school])
 
 def add_school(sid):
     """
@@ -49,7 +49,7 @@ def get_offset(ind):
     """
     Get offset used in plotting year result
     """
-    n = len(schools)
+    n = len(State.schools)
     if(n==1): return 0
     step = MAX_OFFSET/(n-1)
     return ind*step - MAX_OFFSET/2
@@ -77,7 +77,7 @@ def plot_all_results(sid):
     Plots year results across all years for a given school
     """
     tot_offset = get_offset(sid) 
-    school = schools[sid]
+    school = State.schools[sid]
     school_data = (e for e in sorted(data[school]))
 
     plot_year_result(school, next(school_data), tot_offset, True)
@@ -90,7 +90,7 @@ def plot_trend(school):
     """
     Plots trend line for a particular school
     """
-    for sid, school in enumerate(schools):
+    for sid, school in enumerate(State.schools):
         c = get_color(school)
         school_data = sorted(data[school])
 
@@ -139,24 +139,17 @@ def finalize():
     plt.ylabel("Rank")
     plt.show()
 
-
 def add_target_schools(target_schools):
     """
     Adds given schools & displays graph
     """
-    global schools
-    schools = target_schools
-    assert(schools) 
+    State.schools = target_schools
+    assert(State.schools) 
 
     setup()
 
-    n = len(schools)
+    n = len(State.schools)
     for sid in range(n):
         add_school(sid)
 
     finalize()
-
-
-
-
-
