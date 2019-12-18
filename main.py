@@ -9,7 +9,7 @@ from os import listdir
 
 def main():
     # Load data
-    dh.load_data(2015,2018)
+    dh.load_data(2015,2019)
 
     # load save build new
     saves = get_saves()
