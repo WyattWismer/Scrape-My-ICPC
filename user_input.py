@@ -8,7 +8,7 @@ class Choices:
     """
     Storage of user choices both as text and as functions.
     By treating everything as a function the interface can be greatly simplified.
-    Constant values will become constant functions and this makes it easy to 
+    Constant values will become constant functions which makes it easy to 
     serialize eveyrthing in a human readable (and human editable) format.
     Functions are exposed through the [] operator.
     """
@@ -179,7 +179,6 @@ def helpify(help_text):
     border = '-'*longest_line_width+'\n'
     advice = "\nPress enter for default.\n"
     return "\n%s%s%s%s\n" % (border,help_text,advice,border)
-    
 
 def is_int(inp):
     """
@@ -188,7 +187,6 @@ def is_int(inp):
     pat = "^[0-9]+$"
     return (re.match(pat, inp) and True) or False
 
-
 def for_all(p,li):
     """
     return for-all e in li: p[e] = True 
@@ -196,7 +194,6 @@ def for_all(p,li):
     func_and = lambda a,b: a and b 
     p_li = map(p, li)
     return reduce(func_and, p_li)  
-
 
 def print_columns(out): 
     """
@@ -214,7 +211,6 @@ def print_columns(out):
         print fm.format(val),
     print "\n"
 
-
 def get_console_width():
     """
     Attempts to get console width.
@@ -228,9 +224,3 @@ def get_console_width():
     except:
         pass
     return w
-
-
-
-
-        
-

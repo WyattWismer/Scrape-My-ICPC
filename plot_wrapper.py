@@ -5,12 +5,11 @@ from user_input import Choices as CH
 from data_handler import data
 
 
-# CONSTANT
-MAX_OFFSET=0.25
+MAX_HORIZONTAL_POINT_OFFSET=0.25
 
 class State:
     """
-    Keeps track of data used during plotting.
+    Keeps track of data used during plotting
     """
     color_ind = {}
     schools = None 
@@ -18,7 +17,7 @@ class State:
       
 class LF:
     """
-    Exposes functions loaded in from choices configuration
+    Exposes functions loaded in from choices config file
     """
     def __init__(self, functions):
         self.func = functions 
@@ -51,8 +50,8 @@ def get_offset(ind):
     """
     n = len(State.schools)
     if(n==1): return 0
-    step = MAX_OFFSET/(n-1)
-    return ind*step - MAX_OFFSET/2
+    step = MAX_HORIZONTAL_POINT_OFFSET/(n-1)
+    return ind*step - MAX_HORIZONTAL_POINT_OFFSET/2
 
 def plot_year_result(school, year, offset, has_legend):
     """

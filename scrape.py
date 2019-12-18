@@ -7,8 +7,7 @@ import re
 import os
 
 
-#CONSTANTS
-page_dir = "pages"
+PAGE_DIR = "pages"
 
 def clean_school_name(school):
     """
@@ -57,16 +56,16 @@ def load_page(year):
     If already present loads kattis standing page from memory.
     Otherwise makes a request to retrieve page and store for later. 
     """
-    # Make page_dir if it doesn't already exist
-    if not in_dir(page_dir):
-        os.mkdir(page_dir)
+    # Make PAGE_DIR if it doesn't already exist
+    if not in_dir(PAGE_DIR):
+        os.mkdir(PAGE_DIR)
 
      # Check for saved pages
     page_name = "%d.html" % year
-    page_pth = os.path.join(page_dir, page_name)
+    page_pth = os.path.join(PAGE_DIR, page_name)
     
     # Check for existing page
-    if in_dir(page_name, page_dir):
+    if in_dir(page_name, PAGE_DIR):
         fl = open(page_pth, 'r')
         return pickle.load(fl)
     
@@ -78,7 +77,6 @@ def load_page(year):
     pickle.dump(page, fl)
     return page
 
-
 def get_soup(year):
     """
     Builds a *beautiful* soup
@@ -87,7 +85,6 @@ def get_soup(year):
     page = load_page(year)
     soup = BeautifulSoup(page, 'html.parser')
     return soup
-
 
 def get_standings(year):
     """
@@ -111,9 +108,3 @@ def get_standings(year):
         
         teams[school].append(rank)
     return teams
-
-
-
-
-
-
